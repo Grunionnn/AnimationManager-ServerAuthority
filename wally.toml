@@ -1,0 +1,10 @@
+[package]
+name = "grunionnn/animationmanager-serverauthority"
+version = "1.0.0"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+
+[dependencies]
+trove = "sleitnick/trove@1.8.0"
+goodsignal = "stravant/goodsignal@0.3.1"
+networker = "grunionnn/networker@1.0.4"
