@@ -120,12 +120,12 @@ function AnimationManager.OnTrackStopped(self: AnimationManager, name: string, c
 	if self._destroyed then
 		return nil
 	end
-	const animation = self._individualAnimations[name] or self._setAnimations[name] or self._coreAnimations[name]
+	local animation = self._individualAnimations[name] or self._setAnimations[name] or self._coreAnimations[name]
 	if not animation then
 		return nil
 	end
 
-	const track = self._animator:GetTrackByAnimationId(animation.AnimationId)
+	local track = self._animator:GetTrackByAnimationId(animation.AnimationId)
 	if not track then
 		return nil
 	end
@@ -146,14 +146,14 @@ function AnimationManager.MarkerReached(
 	if self._destroyed then
 		return nil
 	end
-	const animation = self._individualAnimations[animName]
+	local animation = self._individualAnimations[animName]
 		or self._setAnimations[animName]
 		or self._coreAnimations[animName]
 	if not animation then
 		return nil
 	end
 
-	const track = self._animator:GetTrackByAnimationId(animation.AnimationId)
+	local track = self._animator:GetTrackByAnimationId(animation.AnimationId)
 	if not track then
 		return nil
 	end
@@ -211,7 +211,7 @@ function AnimationManager.LoadIndividualTrack(self: AnimationManager, name: stri
 		return self._individualAnimations[name]
 	end
 
-	const t = self._animationList.Individual[name]
+	local t = self._animationList.Individual[name]
 
 	self._individualAnimations[name] = t
 
@@ -227,7 +227,7 @@ function AnimationManager.LoadSet(self: AnimationManager, setName: string)
 	assert(self._animationList[setName], "[AnimationManager]: Set not found in AnimationList")
 
 	local previousSet = self._currentSet
-	const previousAnimations = self._setAnimations
+	local previousAnimations = self._setAnimations
 	self._setAnimations = {}
 
 	self._currentSet = setName
@@ -255,7 +255,7 @@ function AnimationManager._stopUnusedAnimations(self: AnimationManager, animatio
 	end
 	for _, animation in animations do
 		if not retained[animation.AnimationId] then
-			const track = self._animator:GetTrackByAnimationId(animation.AnimationId)
+			local track = self._animator:GetTrackByAnimationId(animation.AnimationId)
 			if track then
 				if not track.IsPlaying and track.WeightCurrent == 0 then
 					-- Already ended (or never played): no future Ended event to wait for.
@@ -285,13 +285,13 @@ function AnimationManager._stopUnusedAnimations(self: AnimationManager, animatio
 end
 
 function AnimationManager.UnloadCoreTracks(self: AnimationManager)
-	const animations = self._coreAnimations
+	local animations = self._coreAnimations
 	self._coreAnimations = {}
 	self:_stopUnusedAnimations(animations)
 end
 
 function AnimationManager.UnloadSet(self: AnimationManager)
-	const animations = self._setAnimations
+	local animations = self._setAnimations
 	self._setAnimations = {}
 	self:_stopUnusedAnimations(animations)
 
@@ -303,7 +303,7 @@ function AnimationManager.UnloadSet(self: AnimationManager)
 end
 
 function AnimationManager.UnloadIndividualTrack(self: AnimationManager, name: string)
-	const animation: Animation = self._individualAnimations[name]
+	local animation: Animation = self._individualAnimations[name]
 	if not animation then
 		return
 	end
@@ -313,7 +313,7 @@ function AnimationManager.UnloadIndividualTrack(self: AnimationManager, name: st
 end
 
 function AnimationManager.UnloadIndividualTracks(self: AnimationManager)
-	const animations = self._individualAnimations
+	local animations = self._individualAnimations
 	self._individualAnimations = {}
 	self:_stopUnusedAnimations(animations)
 end
@@ -334,13 +334,13 @@ end
 -- Each call performs one operation; the manager creates no simulation bindings.
 function AnimationManager.Play(self: AnimationManager, name: string, fadeTime: number?)
 	if self._destroyed then return end
-	const animation: Animation = self._individualAnimations[name] or self._setAnimations[name] or self._coreAnimations[name]
+	local animation: Animation = self._individualAnimations[name] or self._setAnimations[name] or self._coreAnimations[name]
 	if not animation then
 		warn(`[AnimationManager]: {name} is not loaded`)
 		return
 	end
 
-	const track = self:_getOrLoadTrack(animation)
+	local track = self:_getOrLoadTrack(animation)
 	if not track.IsPlaying then
 		track:Play(fadeTime)
 	end
@@ -349,13 +349,13 @@ end
 --// Stopping Animations
 function AnimationManager.Stop(self: AnimationManager, name: string, fadeTime: number?)
 	if self._destroyed then return end
-	const animation: Animation = self._individualAnimations[name] or self._setAnimations[name] or self._coreAnimations[name]
+	local animation: Animation = self._individualAnimations[name] or self._setAnimations[name] or self._coreAnimations[name]
 	if not animation then
 		warn(`[AnimationManager]: {name} is not loaded`)
 		return
 	end
 
-	const track = self._animator:GetTrackByAnimationId(animation.AnimationId)
+	local track = self._animator:GetTrackByAnimationId(animation.AnimationId)
 	if track and track.IsPlaying then
 		track:Stop(fadeTime)
 	end
@@ -365,7 +365,7 @@ function AnimationManager.StopAll(self: AnimationManager, fadeTime: number?)
 	if self._destroyed then return end
 	for _, animations in { self._coreAnimations, self._setAnimations, self._individualAnimations } do
 		for _, animation in pairs(animations) do
-			const track = self._animator:GetTrackByAnimationId(animation.AnimationId)
+			local track = self._animator:GetTrackByAnimationId(animation.AnimationId)
 			if track and track.IsPlaying then
 				track:Stop(fadeTime)
 			end
@@ -376,13 +376,13 @@ end
 --// Adjusting Animations
 function AnimationManager.AdjustSpeed(self: AnimationManager, name: string, speed: number)
 	if self._destroyed then return end
-	const animation: Animation = self._individualAnimations[name] or self._setAnimations[name] or self._coreAnimations[name]
+	local animation: Animation = self._individualAnimations[name] or self._setAnimations[name] or self._coreAnimations[name]
 	if not animation then
 		warn("[AnimationManager]: Animation " .. name .. " not loaded")
 		return
 	end
 
-	const track = self._animator:GetTrackByAnimationId(animation.AnimationId)
+	local track = self._animator:GetTrackByAnimationId(animation.AnimationId)
 	if track then
 		track:AdjustSpeed(speed)
 	end
@@ -402,11 +402,11 @@ function AnimationManager.IsSet(self: AnimationManager, setName: string): boolea
 end
 
 function AnimationManager.IsPlaying(self: AnimationManager, animation: string): boolean
-	const anim = self._individualAnimations[animation] or self._setAnimations[animation] or self._coreAnimations[animation]
+	local anim = self._individualAnimations[animation] or self._setAnimations[animation] or self._coreAnimations[animation]
 	if not anim then
 		return false
 	end
-	const track = self._animator:GetTrackByAnimationId(anim.AnimationId)
+	local track = self._animator:GetTrackByAnimationId(anim.AnimationId)
 
 	return track ~= nil and track.IsPlaying
 end
@@ -423,9 +423,9 @@ function AnimationManager.GetLoadedTracks(self: AnimationManager): (
 	local individualTracks: { [string]: AnimationTrack } = {}
 
 	for index, animations in { self._coreAnimations, self._setAnimations, self._individualAnimations } do
-		const loadedTracks = ({ coreTracks, setTracks, individualTracks })[index]
+		local loadedTracks = ({ coreTracks, setTracks, individualTracks })[index]
 		for name, animation in pairs(animations) do
-			const track = self._animator:GetTrackByAnimationId(animation.AnimationId)
+			local track = self._animator:GetTrackByAnimationId(animation.AnimationId)
 			if track then
 				loadedTracks[name] = track
 				table.insert(tracks, track)
@@ -436,12 +436,12 @@ function AnimationManager.GetLoadedTracks(self: AnimationManager): (
 end
 
 function AnimationManager.GetLength(self: AnimationManager, name: string): number?
-	const animation = self._individualAnimations[name] or self._setAnimations[name] or self._coreAnimations[name]
+	local animation = self._individualAnimations[name] or self._setAnimations[name] or self._coreAnimations[name]
 	if not animation then
 		return nil
 	end
 
-	const track = self._animator:GetTrackByAnimationId(animation.AnimationId)
+	local track = self._animator:GetTrackByAnimationId(animation.AnimationId)
 	if not track then
 		return nil
 	end
